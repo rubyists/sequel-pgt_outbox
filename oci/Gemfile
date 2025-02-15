@@ -3,5 +3,5 @@
 source 'https://rubygems.org'
 
 # x-release-please-start-version
-gem 'sequel-pgt_outbox', '= 0.2.2'
+gem 'sequel-pgt_outbox', '= 0.2.3'
 # x-release-please-end
