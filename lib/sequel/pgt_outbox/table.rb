@@ -6,7 +6,7 @@ require_relative 'function'
 module Rubyists
   module PgtOutbox
     # The Outbox Table
-    class Table
+    class Table # rubocop:disable Metrics/ClassLength
       attr_reader(*%i[table opts db])
 
       def self.create!(table, db, opts: {})
@@ -19,31 +19,16 @@ module Rubyists
         @db    = db
       end
 
-      def create! # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      def create!
         db.run 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"' if uuid_primary_key?
-        db.create_table(outbox_table) do
-          if uuid_primary_key
-            uuid :id, default: Sequel.function(uuid_function), primary_key: true
-          else
-            primary_key :id
-          end
-          Integer attempts_column, null: false, default: 0
-          column created_column, timestamp_type
-          column updated_column, timestamp_type
-          column attempted_column, timestamp_type
-          if boolean_completed_column
-            FalseClass completed_column, null: false, default: false
-          else
-            column completed_column, timestamp_type
-          end
-          String event_type_column, null: false
-          String last_error_column
-          jsonb data_before_column
-          jsonb data_after_column
-          jsonb metadata_column
-          index Sequel.asc(created_column)
-          index Sequel.desc(attempted_column)
-        end
+        create_table!
+        integer_columns!
+        completed_column!
+        timestamp_columns!
+        string_columns!
+        jsonb_columns!
+        indexes!
+        self
       end
 
       def name
@@ -55,7 +40,7 @@ module Rubyists
       end
 
       def quoted_name
-        @quoted_name ||= Sequel.quote_schema_table(name)
+        @quoted_name ||= db.send(:quote_schema_table, name)
       end
 
       def event_prefix
@@ -116,6 +101,60 @@ module Rubyists
 
       def function
         @function ||= Function.create!(self, opts:)
+      end
+
+      private
+
+      def create_table!
+        uuid_primary_key = uuid_primary_key?
+        uuid_func = uuid_function
+        db.create_table(name) do
+          if uuid_primary_key
+            uuid :id, default: Sequel.function(uuid_func), primary_key: true
+          else
+            primary_key :id
+          end
+        end
+      end
+
+      def completed_column!
+        if boolean_completed_column
+          db.add_column name, completed_column, FalseClass, null: false, default: false
+        else
+          db.add_column name, completed_column, timestamp_type
+        end
+        self
+      end
+
+      def integer_columns!
+        db.add_column name, attempts_column, Integer, null: false, default: 0
+        self
+      end
+
+      def timestamp_columns!
+        db.add_column name, created_column, timestamp_type
+        db.add_column name, updated_column, timestamp_type
+        db.add_column name, attempted_column, timestamp_type
+        self
+      end
+
+      def string_columns!
+        db.add_column name, event_type_column, String, null: false
+        db.add_column name, last_error_column, String
+        self
+      end
+
+      def jsonb_columns!
+        db.add_column name, data_before_column, :jsonb
+        db.add_column name, data_after_column, :jsonb
+        db.add_column name, metadata_column, :jsonb
+        self
+      end
+
+      def indexes!
+        db.add_index name, Sequel.asc(created_column)
+        db.add_index name, Sequel.desc(attempted_column)
+        self
       end
     end
   end

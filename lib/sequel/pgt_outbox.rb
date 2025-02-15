@@ -8,17 +8,23 @@ require_relative 'pgt_outbox/version'
 module Rubyists
   # The main namespace for the PgtOutbox library
   module PgtOutbox
-    def self.definition=(definition)
-      @definition = definition
+    DEFINITION = proc do
+      def pgt_outbox_setup(table, opts = {})
+        outbox = Rubyists::PgtOutbox.outbox_table(table, self, opts:)
+        pgt_created_at outbox.name, outbox.created_column
+        pgt_updated_at outbox.name, outbox.updated_column
+        outbox.function.name
+      end
+
+      def pgt_outbox_events(table, function, events: %i[insert update delete], when: nil, opts: {})
+        Rubyists::PgtOutbox::Trigger.create!(self, table, function, events:, opts: opts.merge(when:))
+      end
     end
 
-    def self.definition
-      @definition
-    end
-
-    def self.outbox_table(table, opts: {})
+    def self.outbox_table(table, db, opts: {})
       require_relative 'pgt_outbox/table'
-      Table.new(table, opts:)
+      require_relative 'pgt_outbox/trigger'
+      Table.create!(table, db, opts:)
     end
 
     # Helper instance methods
@@ -43,10 +49,8 @@ module Rubyists
     # Mangle the schema name so it can be used in an unquoted_identifier
     # NOTE: Taken from sequel_postgresql_triggers
     # @param [String] table The table name to mangle
-    def mangled_table_name(table)
-      Sequel.quote_schema_table(table).gsub('"', '').gsub(/[^A-Za-z0-9]/, '_').gsub(/_+/, '_')
+    def mangled_table_name(db, table)
+      db.send(:quote_schema_table, table).gsub('"', '').gsub(/[^A-Za-z0-9]/, '_').gsub(/_+/, '_')
     end
   end
 end
-
-require_relative 'pgt_outbox/database_methods'

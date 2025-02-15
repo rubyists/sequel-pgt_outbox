@@ -5,25 +5,42 @@ require_relative '../pgt_outbox'
 module Rubyists
   module PgtOutbox
     # The Outbox Trigger
-    class OutboxTrigger
-      DEFAULT_OPTS = { after: true }.freeze
+    class Trigger
+      DEFAULT_OPTS = { after: true, each_row: true }.freeze
 
-      def self.create!(table, function, events: %i[insert update delete], where: nil, opts: {})
-        new(table, function, events: events, where: where, opts: opts).create!
+      attr_reader(*%i[db table function events opts])
+
+      def self.create!(db, table, function, events: %i[insert update delete], opts: { when: nil })
+        new(db, table, function, events: events, opts: opts).create!
       end
 
-      def initialize(table, function, events: %i[insert update delete], where: nil, opts: {})
+      def initialize(db, table, function, events: %i[insert update delete], opts: { when: nil })
+        @db = db
         @table = table
         @function = function
         @events = events
-        @where = where
         @opts = opts
       end
 
+      def name
+        @name ||= opts.fetch(:trigger_name, function)
+      end
+
       def create!
-        create_trigger(name, <<-SQL, trigger_opts)
-        BEGIN
-        SQL
+        db.create_trigger(table, name, function, events:, each_row:, after:, when: where)
+        self
+      end
+
+      def after
+        trigger_opts.fetch(:after)
+      end
+
+      def where
+        opts.fetch(:when, nil)
+      end
+
+      def each_row
+        trigger_opts.fetch(:each_row)
       end
 
       def trigger_opts
