@@ -9,10 +9,10 @@ Gem::Specification.new do |spec|
   spec.email = ['bougyman@users.noreply.github.com']
 
   spec.summary = 'Triggers to implement a transaction outbox pattern.'
-  spec.description = 'This implements a configurable outbox and triggers to populate it with events. See https://microservices.io/patterns/data/transactional-outbox.html for details. To be this clear, this only handles the insert of events into the outbox'
+  spec.description = 'This implements a configurable outbox and triggers to populate it with events. See https://microservices.io/patterns/data/transactional-outbox.html for details. To be this clear, this only handles the insert of events into the outbox' # rubocop:disable Layout/LineLength
   spec.homepage = 'https://github.com/rubyists/sequel-pgt_outbox'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 3.1.0'
+  spec.required_ruby_version = '>= 3.3.0'
 
   spec.metadata['allowed_push_host'] = "TODO: Set to your gem server 'https://example.com'"
 
@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency 'sequel', '~> 5'
+  spec.add_dependency 'sequel_postgresql_triggers', '~> 1.6'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
