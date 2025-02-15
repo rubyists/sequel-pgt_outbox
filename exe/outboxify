@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'sequel/pgt_outbox'
+require 'optparse'
+
+opts = OptionParser.new do |o|
+  o.banner = 'Usage: outboxify [options] <db uri> <table>'
+end
+
+db_uri = ARGV.shift
+if db_uri.nil?
+  warn 'missing db uri'
+  puts opts
+  exit 1
+end
+
+DB = Sequel.connect db_uri
+DB.extension :pgt_outbox
+
+table = ARGV.shift
+if table.nil?
+  warn 'missing table'
+  puts opts
+  exit 2
+end
+
+function = DB.pgt_outbox_setup(table)
+DB.pgt_outbox_events(table, function)

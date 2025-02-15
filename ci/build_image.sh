@@ -209,7 +209,7 @@ fi
 service=$(basename "$owner_and_repo" .git)
 owner=$(dirname "$owner_and_repo")
 
-full_tag=$IMAGE_NAME:$tag-ruby$RUBY_VERSION-$UBUNTU_VERSION
+full_tag=$IMAGE_NAME:$tag
 # Pass any extra arguments to the build command ("$@" contains the rest of the arguments)
 $runtime build --tag "$full_tag" "$@" \
                --label org.opencontainers.image.created="$(date --utc --iso-8601=seconds)" \
@@ -237,7 +237,7 @@ fi
 mapfile -t tags < <(echo "$tag" | awk -F'.' 'NF==3{print; print $1"."$2; print $1; next} NF==2{print; print $1; next} {print}')
 for t in "${tags[@]}"
 do
-    new_tag=$IMAGE_NAME:$t-ruby$RUBY_VERSION-$UBUNTU_VERSION
+    new_tag=$IMAGE_NAME:$t
     registry_image_name="$REGISTRY/$owner/$new_tag"
     if [ "$runtime" = "podman" ]
     then

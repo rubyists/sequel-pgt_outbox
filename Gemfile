@@ -8,6 +8,7 @@ gemspec
 gem 'minitest', '~> 5.16'
 gem 'minitest-global_expectations'
 gem 'pg'
+gem 'pry'
 gem 'rake', '~> 13.0'
 gem 'rubocop', '~> 1.21'
 gem 'rubocop-minitest'
