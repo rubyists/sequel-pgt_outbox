@@ -14,12 +14,16 @@ end
 
 desc 'Create the test database'
 task :createdb do
-  sh "createdb '#{ENV.fetch("PGT_SPEC_DB", "postgres:///spgt_test")}'"
+  require 'uri'
+  uri = URI.parse(ENV.fetch('PGT_SPEC_DB', 'postgres:///spgt_test'))
+  sh "createdb '#{File.basename(uri.path)}'"
 end
 
 desc 'Drop the test database'
 task :dropdb do
-  sh "dropdb --if-exists '#{ENV.fetch("PGT_SPEC_DB", "postgres:///spgt_test")}'"
+  require 'uri'
+  uri = URI.parse(ENV.fetch('PGT_SPEC_DB', 'postgres:///spgt_test'))
+  sh "dropdb --if-exists '#{File.basename(uri.path)}'"
 end
 
 task resetdb: %i[dropdb createdb]
