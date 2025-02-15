@@ -12,6 +12,10 @@
         {
           "type": "generic",
           "path": "lib/sequel/pgt_outbox/version.rb"
+        },
+        {
+          "type": "generic",
+          "path": "oci/Gemfile"
         }
       ],
       "exclude-paths": [
