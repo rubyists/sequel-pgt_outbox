@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.3](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.2...v0.2.3) (2025-02-15)
+
+
+### Features
+
+* Add `outboxify` cli ([#8](https://github.com/rubyists/sequel-pgt_outbox/issues/8)) ([f9e299f](https://github.com/rubyists/sequel-pgt_outbox/commit/f9e299f1e86936879d1794dd44f2364ce6bc1ae5))
+
 ## [0.2.2](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.1...v0.2.2) (2025-02-15)
 
 
