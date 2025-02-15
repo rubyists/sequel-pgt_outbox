@@ -1,0 +1,82 @@
+= Transaction Outbox for Postgres
+
+This gem provides a way to implement the transaction outbox pattern using triggers (stored procedures) in Postgres.
+
+It utilizes the ruby Sequel ORM to interact with the database, but once it's set up,
+it doesn't require any ruby nor Sequel code for the outbox population to operate. It
+all runs on the PostgreSQL cluster, guaranteeing no matter how the database writes
+occur, the outbox events will always be generated.
+
+== Installation
+
+Install the gem and add to the application's Gemfile by executing:
+
+```bash
+bundle add sequel-pgt_outbox
+```
+
+If bundler is not being used to manage dependencies, install the gem by executing:
+
+```bash
+gem install sequel-pgt_outbox
+```
+
+## Usage
+
+### Using the sequel cli
+
+```bash
+sequel -r sequel/pgt_outbox postgres://localhost/mydb
+Your database is stored in DB...
+irb(main):001> DB.create_table(:foo) { primary_key :id; String :s; Integer :i }
+=> nil
+irb(main):002> function = DB.pgt_setup_outbox(:foo)
+=> "pgt_outbox_foo_outbox"
+irb(main):003> DB[:foo].insert(s: 'foo', i: 1)
+=> 1
+irb(main):004> DB[:foo_outbox].first
+=> nil
+irb(main):005> DB.pgt_outbox_events(:foo, function)
+=>
+#<Rubyists::PgtOutbox::Trigger:0x00007f1ae2fbc2b0
+ @db=#<Sequel::Postgres::Database database=spgt_test>,
+ @events=[:insert, :update, :delete],
+ @function="pgt_outbox_foo_outbox",
+ @name="pgt_outbox_foo_outbox",
+ @opts={when: nil},
+ @table=:foo,
+ @trigger_opts={after: true, each_row: true}>
+irb(main):006> DB[:foo].insert(s: 'bar', i: 2)
+=> 2
+irb(main):007> DB[:foo_outbox].first
+=>
+{id: 1,
+ attempts: 0,
+ completed: nil,
+ created: 2025-02-15 18:20:30.28394 +0000,
+ updated: 2025-02-15 18:20:30.28394 +0000,
+ attempted: nil,
+ event_type: "foo_created",
+ last_error: nil,
+ data_before: nil,
+ data_after: "{\"i\": 2, \"s\": \"bar\", \"id\": 2}",
+ metadata: nil}
+```
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/rubyists/sequel-pgt_outbox. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+## Code of Conduct
+
+Everyone interacting in the Sequel::PgtOutbox project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).

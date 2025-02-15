@@ -1,0 +1,49 @@
+ARG UBUNTU_VERSION=bookworm
+ARG RUBY_VERSION=3.4.1
+FROM docker.io/ruby:$RUBY_VERSION-$UBUNTU_VERSION AS build-env
+
+# Setting env up
+ARG APP_ROOT=/app
+ARG JOBS=8
+ENV LANG C.UTF-8
+ENV BUNDLE_SILENCE_ROOT_WARNING=1
+
+
+# Install dependencies needed for compilation
+RUN apt-get update && \
+    apt-get install -yq build-essential curl git libpq-dev postgresql-client
+
+WORKDIR $APP_ROOT
+
+COPY . .
+
+RUN mkdir -p ./vendor/cache && \
+    bundle install && \
+    bundle exec rake build && \
+    mv pkg/*.gem ./vendor/cache/ && \
+    cp oci/Gemfile . && \
+    bundle install --jobs $JOBS
+
+# Remove folders not needed in resulting image
+RUN rm -rf node_modules tmp/cache app/assets vendor/assets spec
+
+############### Build step done ###############
+ARG UBUNTU_VERSION=bookworm
+ARG RUBY_VERSION=3.3.4
+FROM docker.io/ruby:$RUBY_VERSION-$UBUNTU_VERSION
+
+ARG APP_ROOT=/app
+
+# install packages
+RUN apt update && \
+    apt install -qy curl bash runit && \
+    useradd -m -u 1000 -s /bin/bash outbox
+
+# copy bundle from build-env
+COPY --from=build-env /usr/local/bundle/ /usr/local/bundle/
+
+USER 1000
+WORKDIR $APP_ROOT
+
+
+CMD ['/bin/bash']
