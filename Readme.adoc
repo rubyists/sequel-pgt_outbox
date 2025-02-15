@@ -30,8 +30,37 @@ sequel -r sequel/pgt_outbox postgres://localhost/mydb
 Your database is stored in DB...
 irb(main):001> DB.create_table(:foo) { primary_key :id; String :s; Integer :i }
 => nil
-irb(main):002> DB.create_outbox_table
-
+irb(main):002> function = DB.pgt_setup_outbox(:foo)
+=> "pgt_outbox_foo_outbox"
+irb(main):003> DB[:foo].insert(s: 'foo', i: 1)
+=> 1
+irb(main):004> DB[:foo_outbox].first
+=> nil
+irb(main):005> DB.pgt_outbox_events(:foo, function)
+=>
+#<Rubyists::PgtOutbox::Trigger:0x00007f1ae2fbc2b0
+ @db=#<Sequel::Postgres::Database database=spgt_test>,
+ @events=[:insert, :update, :delete],
+ @function="pgt_outbox_foo_outbox",
+ @name="pgt_outbox_foo_outbox",
+ @opts={when: nil},
+ @table=:foo,
+ @trigger_opts={after: true, each_row: true}>
+irb(main):006> DB[:foo].insert(s: 'bar', i: 2)
+=> 2
+irb(main):007> DB[:foo_outbox].first
+=>
+{id: 1,
+ attempts: 0,
+ completed: nil,
+ created: 2025-02-15 18:20:30.28394 +0000,
+ updated: 2025-02-15 18:20:30.28394 +0000,
+ attempted: nil,
+ event_type: "foo_created",
+ last_error: nil,
+ data_before: nil,
+ data_after: "{\"i\": 2, \"s\": \"bar\", \"id\": 2}",
+ metadata: nil}
 ```
 
 ## Development
@@ -42,7 +71,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sequel-pgt_outbox. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/rubyists/sequel-pgt_outbox. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -50,4 +79,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Sequel::PgtOutbox project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Sequel::PgtOutbox project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
