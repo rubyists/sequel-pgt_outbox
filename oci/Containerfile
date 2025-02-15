@@ -22,6 +22,7 @@ RUN mkdir -p ./vendor/cache && \
     bundle exec rake build && \
     mv pkg/*.gem ./vendor/cache/ && \
     cp oci/Gemfile . && \
+    bundle config set --local disable_checksum_validation true && \
     bundle install --jobs $JOBS
 
 # Remove folders not needed in resulting image

@@ -194,7 +194,7 @@ fi
 
 revision=$(git rev-parse HEAD)
 shortref=$(git rev-parse --short "$revision")
-repo_url=$(git remote get-url upstream)
+repo_url=$(git remote get-url origin)
 if [ -z "$repo_url" ]
 then
     die 7 "No remote found"
