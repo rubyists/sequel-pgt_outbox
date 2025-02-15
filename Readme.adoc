@@ -63,6 +63,46 @@ irb(main):007> DB[:foo_outbox].first
  metadata: nil}
 ```
 
+### Using `outboxify`
+
+```bash
+ % psql spgt_test
+psql (16.4)
+Type "help" for help.
+
+spgt_test=# create table foo (id serial primary key, s text, i integer);
+CREATE TABLE
+spgt_test=# \d
+             List of relations
+ Schema |    Name    |   Type   |  Owner
+--------+------------+----------+----------
+ public | foo        | table    | bougyman
+ public | foo_id_seq | sequence | bougyman
+(2 rows)
+
+spgt_test=# \q
+bougyman@framezotz ~/rubyists/sequel-pgt_outbox
+ % be ./exe/outboxify postgres:///spgt_test foo
+bougyman@framezotz ~/rubyists/sequel-pgt_outbox
+ % psql spgt_test
+psql (16.4)
+Type "help" for help.
+
+spgt_test=# \d foo
+                            Table "public.foo"
+ Column |  Type   | Collation | Nullable |             Default
+--------+---------+-----------+----------+---------------------------------
+ id     | integer |           | not null | nextval('foo_id_seq'::regclass)
+ s      | text    |           |          |
+ i      | integer |           |          |
+Indexes:
+    "foo_pkey" PRIMARY KEY, btree (id)
+Triggers:
+    pgt_outbox_foo_outbox AFTER INSERT OR DELETE OR UPDATE ON foo FOR EACH ROW EXECUTE FUNCTION pgt_outbox_foo_outbox()
+
+spgt_test=#
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
