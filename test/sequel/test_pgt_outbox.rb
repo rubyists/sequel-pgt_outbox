@@ -3,6 +3,40 @@
 
 require_relative '../test_helper'
 
+class Crass
+  include Rubyists::PgtOutbox
+end
+
+describe 'Depth recursion handler' do
+  before do
+    @crass = Crass.new
+  end
+
+  def depth_sql(depth)
+    <<~SQL.strip
+      IF pg_trigger_depth() > #{depth} THEN
+                RETURN NEW;
+              END IF;
+    SQL
+  end
+
+  it 'Should be 1 if true is passed' do
+    _(@crass.depth_guard_clause(true).strip).must_equal depth_sql(1)
+  end
+
+  it 'Should be 1 if 1 is passed' do
+    _(@crass.depth_guard_clause(1).strip).must_equal depth_sql(1)
+  end
+
+  it 'Should be 2 if 2 is passed' do
+    _(@crass.depth_guard_clause(2).strip).must_equal depth_sql(2)
+  end
+
+  it 'Should raise Argument error if 0 is passed' do
+    _ { @crass.depth_guard_clause(0) }.must_raise ArgumentError
+  end
+end
+
 if DB.server_version >= 90_400
   describe 'Basic PostgreSQL Transactional Outbox' do # rubocop:disable Metrics/BlockLength
     before do
@@ -195,3 +229,5 @@ if DB.server_version >= 90_400
     end
   end
 end
+
+# vim: ft=ruby sts=2 sw=2 ts=2 et
