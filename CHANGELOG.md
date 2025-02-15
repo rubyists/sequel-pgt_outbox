@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.2](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.1...v0.2.2) (2025-02-15)
+
+
+### Bug Fixes
+
+* Corrects github remote to origin and ignores rubygems api checksum ([#6](https://github.com/rubyists/sequel-pgt_outbox/issues/6)) ([eb2e557](https://github.com/rubyists/sequel-pgt_outbox/commit/eb2e55743fb13a30427bbcc3ffd71a9c17f1972e))
+
 ## [0.2.1](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.0...v0.2.1) (2025-02-15)
 
 
