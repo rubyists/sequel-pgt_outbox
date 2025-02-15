@@ -22,7 +22,7 @@ jobs:
           - 5432:5432
         env:
           POSTGRES_PASSWORD: password
-          POSTGRES_DATABASE: spgt_test
+          POSTGRES_DATABASE: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -40,4 +40,4 @@ jobs:
       - name: Run the default task
         run: bundle exec rake
         env:
-          PGT_SPEC_DB: postgres://postgres:password@localhost:5432/spgt_test
+          PGT_SPEC_DB: postgres://postgres:password@localhost:5432/postgres
