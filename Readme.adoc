@@ -1,6 +1,7 @@
 = Transaction Outbox for Postgres
+:context: https://morningcoffee.io/what-is-a-transaction-outbox-and-why-you-need-it.html[outbox pattern]
 
-This gem provides a way to implement the transaction outbox pattern using triggers (stored procedures) in Postgres.
+This gem provides a way to implement the transaction {context} using triggers (stored procedures) in Postgres.
 
 It utilizes the ruby Sequel ORM to interact with the database, but once it's set up,
 it doesn't require any ruby nor Sequel code for the outbox population to operate. It
