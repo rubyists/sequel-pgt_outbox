@@ -115,7 +115,7 @@ spgt_test=# \d
 
 spgt_test=# \q
 bougyman@framezotz ~/rubyists/sequel-pgt_outbox
- % be ./exe/outboxify postgres:///spgt_test foo
+ % outboxify postgres:///spgt_test foo
 bougyman@framezotz ~/rubyists/sequel-pgt_outbox
  % psql spgt_test
 psql (16.4)
