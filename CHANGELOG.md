@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.6](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.5...v0.2.6) (2025-02-16)
+
+
+### Bug Fixes
+
+* Again with the transactional language, and force a release ([#21](https://github.com/rubyists/sequel-pgt_outbox/issues/21)) ([18b1824](https://github.com/rubyists/sequel-pgt_outbox/commit/18b1824c2592fbca2ca83928c521436c04696703))
+
 ## [0.2.5](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.4...v0.2.5) (2025-02-16)
 
 
