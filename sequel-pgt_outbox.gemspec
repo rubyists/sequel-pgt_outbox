@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ['bougyman']
   spec.email = ['bougyman@users.noreply.github.com']
 
-  spec.summary = 'Triggers to implement a transaction outbox pattern.'
+  spec.summary = 'Triggers to implement (an important) part of a transactional outbox pattern.'
   spec.description = 'This implements a configurable outbox and triggers to populate it with events. See https://microservices.io/patterns/data/transactional-outbox.html for details. To be this clear, this only handles the insert of events into the outbox' # rubocop:disable Layout/LineLength
   spec.homepage = 'https://github.com/rubyists/sequel-pgt_outbox'
   spec.license = 'MIT'
