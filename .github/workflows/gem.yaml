@@ -12,8 +12,6 @@ jobs:
         registry:
           - key: rubygems
             secret: RUBYGEMS_TOKEN
-          - key: github
-            secret: GEM_TOKEN_GITHUB
     steps:
       -
         name: Checkout repository
