@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.5](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.4...v0.2.5) (2025-02-16)
+
+
+### Bug Fixes
+
+* Correct docs so that extension is used ([#13](https://github.com/rubyists/sequel-pgt_outbox/issues/13)) ([c050c5e](https://github.com/rubyists/sequel-pgt_outbox/commit/c050c5e831e3285b4b2168150ed3ea66dea680e6))
+
 ## [0.2.4](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.3...v0.2.4) (2025-02-16)
 
 
