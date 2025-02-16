@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.4](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.3...v0.2.4) (2025-02-16)
+
+
+### Bug Fixes
+
+* Corrected indentation of guard clause ([#11](https://github.com/rubyists/sequel-pgt_outbox/issues/11)) ([1216606](https://github.com/rubyists/sequel-pgt_outbox/commit/12166061f54bfc395822dab58d065b3cab848537))
+
 ## [0.2.3](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.2...v0.2.3) (2025-02-15)
 
 
