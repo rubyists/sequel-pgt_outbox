@@ -1,4 +1,4 @@
-= Transaction Outbox for Postgres
+= Transactional Outbox for PostgreSQL
 :outbox-pattern: https://morningcoffee.io/what-is-a-transaction-outbox-and-why-you-need-it.html[outbox pattern]
 :postgresql: https://www.postgresql.org/[PostgreSQL]
 :sequel: https://sequel.jeremyevans.net/[Sequel]
@@ -13,7 +13,7 @@
 
 image::https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg[Conventional Commits,link=https://www.conventionalcommits.org/en/v1.0.0/]
 
-This gem provides a way to implement the transaction {outbox-pattern} using triggers
+This gem provides a way to implement the transactional {outbox-pattern} using triggers
 (stored procedures) in the {postgresql} RDBMS.
 
 This only provides the "writing events to the outbox table" part of the outbox pattern.
