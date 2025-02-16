@@ -1,4 +1,5 @@
 = Transactional Outbox for PostgreSQL
+:toc:
 :outbox-pattern: https://morningcoffee.io/what-is-a-transaction-outbox-and-why-you-need-it.html[outbox pattern]
 :postgresql: https://www.postgresql.org/[PostgreSQL]
 :sequel: https://sequel.jeremyevans.net/[Sequel]
