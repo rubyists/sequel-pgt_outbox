@@ -11,6 +11,7 @@
 :github-home: https://github.com/rubyists/sequel-pgt_outbox
 :coc: https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md[Code of Conduct]
 :mit: https://opensource.org/licenses/MIT[MIT License]
+:container-registry: https://github.com/rubyists/sequel-pgt_outbox/pkgs/container/sequel-pgt_outbox[Container Registry]
 
 image::https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg[Conventional Commits,link=https://www.conventionalcommits.org/en/v1.0.0/]
 
@@ -54,6 +55,11 @@ If bundler is not being used to manage dependencies, install the gem by executin
 ```bash
 gem install sequel-pgt_outbox
 ```
+
+=== Container
+
+If you do not want to install the gem, you can use the provided Docker image,
+available at the Rubyists Github {container-registry}.
 
 ## Usage
 
