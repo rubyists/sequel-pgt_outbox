@@ -139,14 +139,20 @@ spgt_test=#
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bundle install` or `bin/setup` to install dependencies.
 
-To install this gem onto your local machine, run `bundle exec rake install`.
+Then, either set the PGT_SPEC_DB environment variable to an existing PostgreSQL db of your choice,
+or run `rake createdb` to create a testing one (`spgt_test`).
+
+Finally run `rake spec` to run the tests.
+
+You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem from source onto your local machine, run `bundle exec rake install`.
 
 ### Conventional Commits & Commit Messages
 
-This project uses the {conventional-commits}
-specification for commit messages, as well as for PR titles.
+This project uses the {conventional-commits} specification for commit messages, as well as for PR titles.
 This allows for automated (by {release-please}) release management, changelog generation, and versioning.
 Please follow the specification when writing commit messages.
 
