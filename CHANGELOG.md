@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.7](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.6...v0.2.7) (2025-02-16)
+
+
+### Bug Fixes
+
+* Removes the github gem publish action which was broken ([#23](https://github.com/rubyists/sequel-pgt_outbox/issues/23)) ([d16e096](https://github.com/rubyists/sequel-pgt_outbox/commit/d16e096fd3659786c30114ca6116e221ad81ddfc))
+
 ## [0.2.6](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.5...v0.2.6) (2025-02-16)
 
 
