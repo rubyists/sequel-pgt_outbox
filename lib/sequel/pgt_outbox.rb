@@ -39,9 +39,9 @@ module Rubyists
       depth_limit = depth_limit.to_i
       raise ArgumentError, ':trigger_depth_limit option must be at least 1' unless depth_limit >= 1
 
-      <<-SQL
-      IF pg_trigger_depth() > #{depth_limit} THEN
-          RETURN NEW;
+      <<~SQL
+        IF pg_trigger_depth() > #{depth_limit} THEN
+            RETURN NEW;
         END IF;
       SQL
     end
