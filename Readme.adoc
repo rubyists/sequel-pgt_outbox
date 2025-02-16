@@ -27,8 +27,10 @@ gem install sequel-pgt_outbox
 ### Using the sequel cli
 
 ```bash
-sequel -r sequel/pgt_outbox postgres://localhost/mydb
+sequel -r sequel/pgt_outbox postgres:///spgt_test
 Your database is stored in DB...
+irb(main):000> DB.extension :pgt_output
+=> #<Sequel::Postgres::Database database=spgt_test>
 irb(main):001> DB.create_table(:foo) { primary_key :id; String :s; Integer :i }
 => nil
 irb(main):002> function = DB.pgt_setup_outbox(:foo)
