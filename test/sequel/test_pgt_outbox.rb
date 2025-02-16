@@ -15,8 +15,8 @@ describe 'Depth recursion handler' do
   def depth_sql(depth)
     <<~SQL.strip
       IF pg_trigger_depth() > #{depth} THEN
-                RETURN NEW;
-              END IF;
+          RETURN NEW;
+      END IF;
     SQL
   end
 
