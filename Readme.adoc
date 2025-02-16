@@ -1,12 +1,42 @@
 = Transaction Outbox for Postgres
-:context: https://morningcoffee.io/what-is-a-transaction-outbox-and-why-you-need-it.html[outbox pattern]
+:outbox-pattern: https://morningcoffee.io/what-is-a-transaction-outbox-and-why-you-need-it.html[outbox pattern]
+:postgresql: https://www.postgresql.org/[PostgreSQL]
+:sequel: https://sequel.jeremyevans.net/[Sequel]
+:eventide: https://eventide-project.org/[Eventide]
+:rails-event-store: https://railseventstore.org/[Rails Event Store]
+:tobox: https://gitlab.com/os85/tobox[Tobox]
+:release-please: https://github.com/googleapis/release-please[release-please]
+:conventional-commits: https://www.conventionalcommits.org/en/v1.0.0/[Conventional Commits]
+:github-home: https://github.com/rubyists/sequel-pgt_outbox
+:coc: https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md[Code of Conduct]
+:mit: https://opensource.org/licenses/MIT[MIT License]
 
-This gem provides a way to implement the transaction {context} using triggers (stored procedures) in Postgres.
+image::https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg[Conventional Commits,link=https://www.conventionalcommits.org/en/v1.0.0/]
 
-It utilizes the ruby Sequel ORM to interact with the database, but once it's set up,
-it doesn't require any ruby nor Sequel code for the outbox population to operate. It
-all runs on the PostgreSQL cluster, guaranteeing no matter how the database writes
+This gem provides a way to implement the transaction {outbox-pattern} using triggers
+(stored procedures) in the {postgresql} RDBMS.
+
+This only provides the "writing events to the outbox table" part of the outbox pattern.
+It does not provide the "reading and handling events from the outbox table" part.
+That is up to the application to implement.
+
+There are many libraries that can be used to read and handle events from the outbox table,
+among them are:
+
+- {eventide}
+- {rails-event-store}
+- {tobox}
+
+PgtOutbox utilizes the ruby {sequel} ORM to interact with the database, but once it's set up,
+it doesn't require any ruby nor {sequel} code for the outbox population to operate. It
+all runs on the {postgresql} cluster, guaranteeing no matter how the database writes
 occur, the outbox events will always be generated.
+
+== Features
+
+* Create outbox table(s) to store events
+* Create function(s) to write events to outbox table
+* Create trigger(s) to attach to tables so their changes write events to the outbox(es)
 
 == Installation
 
@@ -110,16 +140,25 @@ spgt_test=#
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+
+### Conventional Commits & Commit Messages
+
+This project uses the {conventional-commits}
+specification for commit messages, as well as for PR titles.
+This allows for automated (by {release-please}) release management, changelog generation, and versioning.
+Please follow the specification when writing commit messages.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/rubyists/sequel-pgt_outbox. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at {github-home}.
+Discussions are welcome in the discussions section of the repository.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the {mit}.
 
 ## Code of Conduct
 
-Everyone interacting in the Sequel::PgtOutbox project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/rubyists/sequel-pgt_outbox/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the PgtOutbox project's codebases, issue trackers,
+and discussions is expected to follow the {coc}.
