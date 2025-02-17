@@ -58,7 +58,7 @@ gem install sequel-pgt_outbox
 
 === Container
 
-If you do not want to install the gem, you can use the provided Docker image,
+If you do not want to install the gem, you can use the provided OCI Container image,
 available at the Rubyists Github {container-registry}.
 
 ## Usage
