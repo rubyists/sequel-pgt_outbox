@@ -6,7 +6,7 @@ module Rubyists
   module PgtOutbox
     # The Outbox Trigger
     class Trigger
-      DEFAULT_OPTS = { after: true, each_row: true }.freeze
+      DEFAULT_OPTS = { after: true, each_row: true, replace: true }.freeze
 
       attr_reader(*%i[db table function events opts])
 
@@ -27,7 +27,7 @@ module Rubyists
       end
 
       def create!
-        db.create_trigger(table, name, function, events:, each_row:, after:, when: where)
+        db.create_trigger(table, name, function, after:, each_row:, events:, replace:, when: where)
         self
       end
 
@@ -41,6 +41,10 @@ module Rubyists
 
       def each_row
         trigger_opts.fetch(:each_row)
+      end
+
+      def replace
+        trigger_opts.fetch(:replace)
       end
 
       def trigger_opts
