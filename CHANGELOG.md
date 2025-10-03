@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.8](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.7...v0.2.8) (2025-04-02)
+
+
+### Bug Fixes
+
+* **trigger:** Adds REPLACE option to trigger creation, defaults to true ([#26](https://github.com/rubyists/sequel-pgt_outbox/issues/26)) ([abedbb2](https://github.com/rubyists/sequel-pgt_outbox/commit/abedbb2b8a2e7431903f678e583a17145dbff7bc))
+
 ## [0.2.7](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.6...v0.2.7) (2025-02-16)
 
 
