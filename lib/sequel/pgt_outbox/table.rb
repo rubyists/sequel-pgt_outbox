@@ -19,7 +19,7 @@ module Rubyists
         @db    = db
       end
 
-      def create!
+      def create! # rubocop:disable Metrics/MethodLength
         db.run 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"' if uuid_primary_key?
         create_table!
         integer_columns!
@@ -29,6 +29,7 @@ module Rubyists
         jsonb_columns!
         indexes!
         autovacuum_settings!
+        notify_trigger!
         self
       end
 
@@ -124,6 +125,14 @@ module Rubyists
         opts.fetch(:autovacuum_vacuum_cost_delay, 0)
       end
 
+      def notify?
+        @notify ||= opts.fetch(:notify, false)
+      end
+
+      def notify_channel
+        @notify_channel ||= opts.fetch(:notify_channel, "#{name}_notifications")
+      end
+
       def function
         @function ||= Function.create!(self, opts:)
       end
@@ -193,6 +202,14 @@ module Rubyists
           autovacuum_vacuum_cost_delay: autovacuum_vacuum_cost_delay
         }
         db.run "ALTER TABLE #{quoted_name} SET (#{settings.map { |k, v| "#{k} = #{v}" }.join(", ")})"
+        self
+      end
+
+      def notify_trigger!
+        return unless notify?
+
+        require_relative 'notify_trigger'
+        NotifyTrigger.create!(self, channel: notify_channel, opts: opts.fetch(:notify_opts, {}))
         self
       end
     end

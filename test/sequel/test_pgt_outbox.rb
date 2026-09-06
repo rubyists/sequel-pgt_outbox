@@ -315,6 +315,105 @@ if DB.server_version >= 90_400
       _(opts).must_include 'autovacuum_vacuum_cost_delay=20'
     end
   end
+
+  describe 'PG NOTIFY Trigger' do # rubocop:disable Metrics/BlockLength
+    def get_trigger(table_name, trigger_name)
+      DB[
+        'SELECT tgname FROM pg_trigger ' \
+        'JOIN pg_class ON pg_class.oid = pg_trigger.tgrelid ' \
+        'WHERE pg_class.relname = ? AND pg_trigger.tgname = ?',
+        table_name, trigger_name
+      ].first
+    end
+
+    def get_function(func_name)
+      DB[
+        'SELECT proname FROM pg_proc WHERE proname = ?',
+        func_name
+      ].first
+    end
+
+    after do
+      DB.drop_table(:accounts, :accounts_outbox)
+      begin
+        DB.drop_function(:spgt_outbox_events)
+      rescue Sequel::DatabaseError
+        # function may not exist
+      end
+      begin
+        DB.drop_function('pgt_outbox_notify_accounts_outbox')
+      rescue Sequel::DatabaseError
+        # function may not exist
+      end
+    end
+
+    it 'should not create notify trigger by default' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts, function_name: :spgt_outbox_events)
+
+      trigger = get_trigger('accounts_outbox', 'pgt_outbox_notify_after_insert_accounts_outbox')
+
+      _(trigger).must_be_nil
+    end
+
+    it 'should create notify function and trigger when notify: true' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts, notify: true, function_name: :spgt_outbox_events)
+
+      func = get_function('pgt_outbox_notify_accounts_outbox')
+
+      _(func).wont_be :nil?
+
+      trigger = get_trigger('accounts_outbox', 'pgt_outbox_notify_after_insert_accounts_outbox')
+
+      _(trigger).wont_be :nil?
+    end
+
+    it 'should use custom channel name when provided' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts, notify: true, notify_channel: 'my_custom_channel',
+                                     function_name: :spgt_outbox_events)
+
+      func = get_function('pgt_outbox_notify_accounts_outbox')
+
+      _(func).wont_be :nil?
+
+      # Verify the function body contains the custom channel
+      func_body = DB[
+        'SELECT proname, prosrc FROM pg_proc WHERE proname = ?',
+        'pgt_outbox_notify_accounts_outbox'
+      ].first[:prosrc]
+
+      _(func_body).must_include 'my_custom_channel'
+    end
+
+    it 'should send notification on insert into outbox' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts, notify: true, function_name: :spgt_outbox_events)
+      DB.pgt_outbox_events(:accounts, 'spgt_outbox_events')
+
+      # Insert a row which should trigger the notify
+      DB[:accounts].insert(id: 1, s: 'test')
+
+      # Verify outbox event was created
+      outbox_event = DB[:accounts_outbox].first
+
+      _(outbox_event).wont_be :nil?
+      _(outbox_event[:event_type]).must_equal 'accounts_created'
+    end
+  end
 end
 
 # vim: ft=ruby sts=2 sw=2 ts=2 et
