@@ -60,8 +60,10 @@ if DB.server_version >= 90_400
 
       ds = DB[:accounts]
       ds.insert(id: 1, s: 'string')
+
       _(ds.all).must_equal [{ id: 1, s: 'string' }]
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h).must_equal(id: 1,
@@ -75,8 +77,10 @@ if DB.server_version >= 90_400
                       metadata: nil)
 
       ds.where(id: 1).update(s: 'string2')
+
       _(ds.all).must_equal [{ id: 1, s: 'string2' }]
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h).must_equal(id: 2,
@@ -90,8 +94,10 @@ if DB.server_version >= 90_400
                       metadata: nil)
 
       ds.delete
+
       _(ds.all).must_equal []
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h).must_equal(id: 3,
@@ -130,21 +136,27 @@ if DB.server_version >= 90_400
 
       ds = DB[:accounts]
       ds.insert(id: 1, s: 'string')
+
       _(ds.all).must_equal [{ id: 1, s: 'string' }]
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       id = h.delete(:id)
+
       _(id).must_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
       _(h).must_equal(attempts: 0, attempted: nil, completed: nil, event_type: 'accounts_created', last_error: nil,
                       data_before: nil, data_after: { 's' => 'string', 'id' => 1 }, metadata: nil)
 
       ds.where(id: 1).update(s: 'string2')
+
       _(ds.all).must_equal [{ id: 1, s: 'string2' }]
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       id = h.delete(:id)
+
       _(id).must_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
       _(h).must_equal(attempts: 0,
                       attempted: nil,
@@ -156,11 +168,14 @@ if DB.server_version >= 90_400
                       metadata: nil)
 
       ds.delete
+
       _(ds.all).must_equal []
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       id = h.delete(:id)
+
       _(id).must_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
       _(h).must_equal(attempts: 0, attempted: nil, completed: nil, event_type: 'accounts_deleted', last_error: nil,
                       data_before: { 's' => 'string2', 'id' => 1 }, data_after: nil, metadata: nil)
@@ -192,21 +207,27 @@ if DB.server_version >= 90_400
 
       ds = DB[:accounts]
       ds.insert(id: 1, s: 'string')
+
       _(ds.all).must_equal [{ id: 1, s: 'string' }]
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       id = h.delete(:id)
+
       _(id).must_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
       _(h).must_equal(attempts: 0, attempted: nil, completed: false, event_type: 'accounts_created', last_error: nil,
                       data_before: nil, data_after: { 's' => 'string', 'id' => 1 }, metadata: nil)
 
       ds.where(id: 1).update(s: 'string2')
+
       _(ds.all).must_equal [{ id: 1, s: 'string2' }]
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       id = h.delete(:id)
+
       _(id).must_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
       _(h).must_equal(attempts: 0,
                       attempted: nil,
@@ -218,11 +239,14 @@ if DB.server_version >= 90_400
                       metadata: nil)
 
       ds.delete
+
       _(ds.all).must_equal []
       h = @logs.first
+
       _(h.delete(:created).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       _(h.delete(:updated).to_i).must_be_close_to(10, DB.get(Sequel::CURRENT_TIMESTAMP).to_i)
       id = h.delete(:id)
+
       _(id).must_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
       _(h).must_equal(attempts: 0, attempted: nil, completed: false, event_type: 'accounts_deleted', last_error: nil,
                       data_before: { 's' => 'string2', 'id' => 1 }, data_after: nil, metadata: nil)
@@ -234,16 +258,16 @@ if DB.server_version >= 90_400
   describe 'PG NOTIFY Trigger' do # rubocop:disable Metrics/BlockLength
     def get_trigger(table_name, trigger_name)
       DB[
-        "SELECT tgname FROM pg_trigger " \
-        "JOIN pg_class ON pg_class.oid = pg_trigger.tgrelid " \
-        "WHERE pg_class.relname = ? AND pg_trigger.tgname = ?",
+        'SELECT tgname FROM pg_trigger ' \
+        'JOIN pg_class ON pg_class.oid = pg_trigger.tgrelid ' \
+        'WHERE pg_class.relname = ? AND pg_trigger.tgname = ?',
         table_name, trigger_name
       ].first
     end
 
     def get_function(func_name)
       DB[
-        "SELECT proname FROM pg_proc WHERE proname = ?",
+        'SELECT proname FROM pg_proc WHERE proname = ?',
         func_name
       ].first
     end
@@ -296,7 +320,7 @@ if DB.server_version >= 90_400
         String :s
       end
       DB.pgt_outbox_setup(:accounts, notify: true, notify_channel: 'my_custom_channel',
-                                                     function_name: :spgt_outbox_events)
+                                     function_name: :spgt_outbox_events)
 
       func = get_function('pgt_outbox_notify_accounts_outbox')
 
