@@ -28,6 +28,7 @@ module Rubyists
         string_columns!
         jsonb_columns!
         indexes!
+        notify_trigger!
         self
       end
 
@@ -99,6 +100,14 @@ module Rubyists
         @uuid_function ||= opts.fetch(:uuid_function, :uuid_generate_v4)
       end
 
+      def notify?
+        @notify ||= opts.fetch(:notify, false)
+      end
+
+      def notify_channel
+        @notify_channel ||= opts.fetch(:notify_channel, "#{name}_notifications")
+      end
+
       def function
         @function ||= Function.create!(self, opts:)
       end
@@ -154,6 +163,14 @@ module Rubyists
       def indexes!
         db.add_index name, Sequel.asc(created_column)
         db.add_index name, Sequel.desc(attempted_column)
+        self
+      end
+
+      def notify_trigger!
+        return unless notify?
+
+        require_relative 'notify_trigger'
+        NotifyTrigger.create!(self, channel: notify_channel, opts: opts.fetch(:notify_opts, {}))
         self
       end
     end

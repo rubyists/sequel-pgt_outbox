@@ -4,9 +4,15 @@
 require 'sequel/pgt_outbox'
 require 'optparse'
 
+notify = false
+notify_channel = nil
+
 opts = OptionParser.new do |o|
   o.banner = 'Usage: outboxify [options] <db uri> <table>'
+  o.on('--notify') { notify = true }
+  o.on('--notify-channel CHANNEL') { |c| notify_channel = c }
 end
+opts.parse!
 
 db_uri = ARGV.shift
 if db_uri.nil?
@@ -25,5 +31,7 @@ if table.nil?
   exit 2
 end
 
-function = DB.pgt_outbox_setup(table)
+options = { notify: }
+options[:notify_channel] = notify_channel if notify_channel
+function = DB.pgt_outbox_setup(table, **options)
 DB.pgt_outbox_events(table, function)
