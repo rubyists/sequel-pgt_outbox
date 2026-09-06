@@ -8,6 +8,7 @@ module Rubyists
     # The Outbox Function
     class Function
       include PgtOutbox
+
       DEFAULT_OPTS = { language: :plpgsql, returns: :trigger, replace: true }.freeze
 
       attr_reader(*%i[outbox db opts])
