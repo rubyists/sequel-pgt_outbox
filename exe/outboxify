@@ -4,9 +4,13 @@
 require 'sequel/pgt_outbox'
 require 'optparse'
 
+autovacuum = true
+
 opts = OptionParser.new do |o|
   o.banner = 'Usage: outboxify [options] <db uri> <table>'
+  o.on('--no-autovacuum') { autovacuum = false }
 end
+opts.parse!
 
 db_uri = ARGV.shift
 if db_uri.nil?
@@ -25,5 +29,6 @@ if table.nil?
   exit 2
 end
 
-function = DB.pgt_outbox_setup(table)
+options = { autovacuum: }
+function = DB.pgt_outbox_setup(table, **options)
 DB.pgt_outbox_events(table, function)
