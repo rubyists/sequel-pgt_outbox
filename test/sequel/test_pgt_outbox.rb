@@ -230,4 +230,67 @@ if DB.server_version >= 90_400
   end
 end
 
+if DB.server_version >= 90_400
+  describe 'Autovacuum Settings' do # rubocop:disable Metrics/BlockLength
+    def get_reloptions(table_name)
+      DB['SELECT reloptions FROM pg_class WHERE relname = ?', table_name].first[:reloptions]
+    end
+
+    after do
+      DB.drop_table(:accounts, :accounts_outbox)
+      begin
+        DB.drop_function(:spgt_outbox_events)
+      rescue Sequel::DatabaseError
+        # function may not exist
+      end
+    end
+
+    it 'should apply default autovacuum settings by default' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts, function_name: :spgt_outbox_events)
+
+      opts = get_reloptions('accounts_outbox')
+
+      _(opts).must_include 'autovacuum_vacuum_scale_factor=0'
+      _(opts).must_include 'autovacuum_vacuum_threshold=50'
+      _(opts).must_include 'autovacuum_analyze_scale_factor=0'
+      _(opts).must_include 'autovacuum_analyze_threshold=50'
+      _(opts).must_include 'autovacuum_vacuum_cost_delay=0'
+    end
+
+    it 'should skip autovacuum settings when autovacuum: false' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts, autovacuum: false, function_name: :spgt_outbox_events)
+
+      opts = get_reloptions('accounts_outbox')
+
+      _(opts).must_be_nil
+    end
+
+    it 'should apply custom autovacuum thresholds' do
+      DB.create_table!(:accounts) do
+        integer :id
+        String :s
+      end
+      DB.pgt_outbox_setup(:accounts,
+                          function_name: :spgt_outbox_events,
+                          autovacuum_vacuum_threshold: 100,
+                          autovacuum_analyze_threshold: 200,
+                          autovacuum_vacuum_cost_delay: 20)
+
+      opts = get_reloptions('accounts_outbox')
+
+      _(opts).must_include 'autovacuum_vacuum_threshold=100'
+      _(opts).must_include 'autovacuum_analyze_threshold=200'
+      _(opts).must_include 'autovacuum_vacuum_cost_delay=20'
+    end
+  end
+end
+
 # vim: ft=ruby sts=2 sw=2 ts=2 et
