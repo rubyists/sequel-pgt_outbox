@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [0.2.9](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.8...v0.2.9) (2026-09-06)
+
+
+### Features
+
+* **table:** add configurable autovacuum settings for outbox tables ([#30](https://github.com/rubyists/sequel-pgt_outbox/issues/30)) ([2e458b4](https://github.com/rubyists/sequel-pgt_outbox/commit/2e458b4286725f2b9e400073aa3a6e6d049248e8))
+* **table:** add optional PG NOTIFY trigger for outbox tables ([#31](https://github.com/rubyists/sequel-pgt_outbox/issues/31)) ([218796b](https://github.com/rubyists/sequel-pgt_outbox/commit/218796bf2b1d75b63904a398ecf73ec4e99a9298))
+
 ## [0.2.8](https://github.com/rubyists/sequel-pgt_outbox/compare/v0.2.7...v0.2.8) (2025-04-02)
 
 
