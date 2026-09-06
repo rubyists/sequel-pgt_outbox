@@ -4,11 +4,13 @@
 require 'sequel/pgt_outbox'
 require 'optparse'
 
+autovacuum = true
 notify = false
 notify_channel = nil
 
 opts = OptionParser.new do |o|
   o.banner = 'Usage: outboxify [options] <db uri> <table>'
+  o.on('--no-autovacuum') { autovacuum = false }
   o.on('--notify') { notify = true }
   o.on('--notify-channel CHANNEL') { |c| notify_channel = c }
 end
@@ -31,7 +33,7 @@ if table.nil?
   exit 2
 end
 
-options = { notify: }
+options = { autovacuum:, notify: }
 options[:notify_channel] = notify_channel if notify_channel
 function = DB.pgt_outbox_setup(table, **options)
 DB.pgt_outbox_events(table, function)

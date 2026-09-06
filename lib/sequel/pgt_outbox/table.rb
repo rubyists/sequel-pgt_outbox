@@ -19,7 +19,7 @@ module Rubyists
         @db    = db
       end
 
-      def create!
+      def create! # rubocop:disable Metrics/MethodLength
         db.run 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"' if uuid_primary_key?
         create_table!
         integer_columns!
@@ -28,6 +28,7 @@ module Rubyists
         string_columns!
         jsonb_columns!
         indexes!
+        autovacuum_settings!
         notify_trigger!
         self
       end
@@ -100,6 +101,30 @@ module Rubyists
         @uuid_function ||= opts.fetch(:uuid_function, :uuid_generate_v4)
       end
 
+      def autovacuum?
+        @autovacuum ||= opts.fetch(:autovacuum, true)
+      end
+
+      def autovacuum_vacuum_scale_factor
+        opts.fetch(:autovacuum_vacuum_scale_factor, 0)
+      end
+
+      def autovacuum_vacuum_threshold
+        opts.fetch(:autovacuum_vacuum_threshold, 50)
+      end
+
+      def autovacuum_analyze_scale_factor
+        opts.fetch(:autovacuum_analyze_scale_factor, 0)
+      end
+
+      def autovacuum_analyze_threshold
+        opts.fetch(:autovacuum_analyze_threshold, 50)
+      end
+
+      def autovacuum_vacuum_cost_delay
+        opts.fetch(:autovacuum_vacuum_cost_delay, 0)
+      end
+
       def notify?
         @notify ||= opts.fetch(:notify, false)
       end
@@ -163,6 +188,20 @@ module Rubyists
       def indexes!
         db.add_index name, Sequel.asc(created_column)
         db.add_index name, Sequel.desc(attempted_column)
+        self
+      end
+
+      def autovacuum_settings!
+        return unless autovacuum?
+
+        settings = {
+          autovacuum_vacuum_scale_factor: autovacuum_vacuum_scale_factor,
+          autovacuum_vacuum_threshold: autovacuum_vacuum_threshold,
+          autovacuum_analyze_scale_factor: autovacuum_analyze_scale_factor,
+          autovacuum_analyze_threshold: autovacuum_analyze_threshold,
+          autovacuum_vacuum_cost_delay: autovacuum_vacuum_cost_delay
+        }
+        db.run "ALTER TABLE #{quoted_name} SET (#{settings.map { |k, v| "#{k} = #{v}" }.join(", ")})"
         self
       end
 
